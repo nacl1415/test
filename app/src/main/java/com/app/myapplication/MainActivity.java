@@ -7,6 +7,7 @@ public class MainActivity extends AppCompatActivity {
 
     int a=0;
     int dark = 1;
+    int k = 0;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
