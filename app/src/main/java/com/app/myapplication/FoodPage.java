@@ -13,6 +13,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -185,26 +186,25 @@ public class FoodPage extends AppCompatActivity implements NavigationView.OnNavi
 		amountEdit.setEms(6);
 		amountEdit.setBackgroundColor(Color.TRANSPARENT);
 		amountEdit.setGravity(Gravity.CENTER);
+		amountEdit.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
 		layout3.addView(amountEdit);
 		amountEdit.setOnEditorActionListener(new TextView.OnEditorActionListener() {
 			@Override
 			public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
 				if (actionId == EditorInfo.IME_ACTION_SEARCH ||
-					actionId == EditorInfo.IME_ACTION_DONE ||
-					event.getAction() == KeyEvent.ACTION_DOWN &&
-					event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
-					if (!event.isShiftPressed()) {
-						int amount = 0;
-						try{
-							amount = Integer.valueOf(amountEdit.getText().toString());
-						}catch (Exception e){
-							amount = 0;
-							amountEdit.setText("0");
-						}
-						mFoodList.get(prodID).setAmount(amount);
-						calcuTotalPrice();
-						return true;
+                    actionId == EditorInfo.IME_ACTION_DONE ||
+                    actionId == EditorInfo.IME_ACTION_NEXT)
+				{
+					int amount = 0;
+					try{
+						amount = Integer.valueOf(amountEdit.getText().toString());
+					}catch (Exception e){
+						amount = 0;
+						amountEdit.setText("0");
 					}
+					mFoodList.get(prodID).setAmount(amount);
+					calcuTotalPrice();
+					return true;
 				}
 				return false;
 			}

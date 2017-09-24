@@ -72,4 +72,31 @@ public class MemberMgr {
             mBuyFoodList.put(prodID, obj);
         }
     }
+
+    public void addFoodObj(FoodObj foodObj)
+    {
+        String prodID = foodObj.getProdID();
+        if(mBuyFoodList.get(prodID) == null)
+        {
+            mBuyFoodList.put(prodID, foodObj);
+        }
+    }
+
+    public void removeFoodObj(String prodID)
+    {
+        if(mBuyFoodList.get(prodID) == null)
+            return;
+
+        mBuyFoodList.remove(prodID);
+    }
+
+    public int getTotalPrice()
+    {
+        int totalPrice = 0;
+        for (Object key : mBuyFoodList.keySet()) {
+            totalPrice = totalPrice + mBuyFoodList.get(key).getPrice();
+        }
+
+        return totalPrice;
+    }
 }
