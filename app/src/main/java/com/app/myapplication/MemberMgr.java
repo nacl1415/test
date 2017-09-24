@@ -24,7 +24,7 @@ public class MemberMgr {
     boolean mIsLogin = false;
     int mCurrPage = 0;
 
-    HashMap<String, BuyFoodObj> mBuyFoodList = new HashMap<>();
+    HashMap<String, FoodObj> mBuyFoodList = new HashMap<>();
 
     private MemberMgr()
     {
@@ -67,7 +67,7 @@ public class MemberMgr {
 
     public void addBuyFoodObj(String prodID, String price)
     {
-        BuyFoodObj obj = new BuyFoodObj(prodID, price);
+        FoodObj obj = new FoodObj(prodID, price);
         if(mBuyFoodList.get(prodID) == null) {
             mBuyFoodList.put(prodID, obj);
         }

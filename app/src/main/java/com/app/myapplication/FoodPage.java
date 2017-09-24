@@ -14,6 +14,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -29,12 +30,18 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.HashMap;
+
 public class FoodPage extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener
 {
-	ProgressDialog mProgress;
-	LinearLayout mMainLayout;
+
 	ImgCreater mImgCreater = ImgCreater.getInstance();
 	MemberMgr mMemberMgr = MemberMgr.getInstance();
+	HashMap<String, FoodObj> mFoodList = new HashMap<>();
+
+	ProgressDialog mProgress;
+	LinearLayout mMainLayout;
+	TextView mTotalPriceView;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -65,6 +72,14 @@ public class FoodPage extends AppCompatActivity implements NavigationView.OnNavi
 		//==================================================
 
 		mMainLayout = (LinearLayout)findViewById(R.id.mainLayout);
+		mTotalPriceView = (TextView) findViewById(R.id.tPriceView);
+		Button payBtn = (Button)findViewById(R.id.payButton);
+		payBtn.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+
+			}
+		});
 //		createFood(R.drawable.a00);
 //		createFood(R.drawable.a01);
 //		createFood(R.drawable.a02);
@@ -87,10 +102,8 @@ public class FoodPage extends AppCompatActivity implements NavigationView.OnNavi
 		ConnDB.getInstance().getFoodList(FoodPage.this, MemberMgr.getInstance().getSelectShopID(), true);
 	}
 
-	private void createFood(String prodID, String name, String price, String imgName, String shopID)
+	private void createFood(final String prodID, String name, String price, String imgName, String shopID)
 	{
-		mMemberMgr.addBuyFoodObj(prodID, price);
-
 		int imgID = mImgCreater.getImgID(FoodPage.this, imgName);
 		LinearLayout layout = new LinearLayout(this);
 		LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
@@ -149,33 +162,88 @@ public class FoodPage extends AppCompatActivity implements NavigationView.OnNavi
 		layout3.setBackgroundResource(R.drawable.objbg01);
 		layout.addView(layout3);
 
+		final EditText amountEdit = new EditText(this);
+
 		Button btn = new Button(this);
 		btn.setLayoutParams(textParam);
         layout3.addView(btn);
 		btn.setText("-");
 		btn.setAlpha(0);
+		btn.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				int amount = mFoodList.get(prodID).modifyAmount(-1);
+				amountEdit.setText("" + amount);
+				calcuTotalPrice();
+			}
+		});
 
-		EditText edit = new EditText(this);
-		edit.setImeOptions(EditorInfo.IME_ACTION_DONE);
-		edit.setText("0");
-		edit.setTextColor(Color.WHITE);
-		edit.setTextSize(20);
-		edit.setEms(6);
-		edit.setBackgroundColor(Color.TRANSPARENT);
-		edit.setGravity(Gravity.CENTER);
-		layout3.addView(edit);
+		amountEdit.setImeOptions(EditorInfo.IME_ACTION_DONE);
+		amountEdit.setText("0");
+		amountEdit.setTextColor(Color.WHITE);
+		amountEdit.setTextSize(20);
+		amountEdit.setEms(6);
+		amountEdit.setBackgroundColor(Color.TRANSPARENT);
+		amountEdit.setGravity(Gravity.CENTER);
+		layout3.addView(amountEdit);
+		amountEdit.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+			@Override
+			public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+				if (actionId == EditorInfo.IME_ACTION_SEARCH ||
+					actionId == EditorInfo.IME_ACTION_DONE ||
+					event.getAction() == KeyEvent.ACTION_DOWN &&
+					event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
+					if (!event.isShiftPressed()) {
+						int amount = 0;
+						try{
+							amount = Integer.valueOf(amountEdit.getText().toString());
+						}catch (Exception e){
+							amount = 0;
+							amountEdit.setText("0");
+						}
+						mFoodList.get(prodID).setAmount(amount);
+						calcuTotalPrice();
+						return true;
+					}
+				}
+				return false;
+			}
+		});
 
 		btn = new Button(this);
 		btn.setLayoutParams(textParam);
         layout3.addView(btn);
 		btn.setText("+");
 		btn.setAlpha(0);
+		btn.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				int amount = mFoodList.get(prodID).modifyAmount(1);
+				amountEdit.setText("" + amount);
+				calcuTotalPrice();
+			}
+		});
+
+		if(mFoodList.get(prodID) == null) {
+			FoodObj foodObj = new FoodObj(prodID, price);
+			mFoodList.put(prodID, foodObj);
+		}
 	}
 
 	public void onLoadFoodSucc(String json)
 	{
 		mProgress.dismiss();
 		showFoodList(json);
+	}
+
+	private void calcuTotalPrice()
+	{
+		int totalPrice = 0;
+		for (Object key : mFoodList.keySet()) {
+			totalPrice = totalPrice + mFoodList.get(key).getPrice();
+		}
+
+		mTotalPriceView.setText("" + totalPrice);
 	}
 
 	protected void showFoodList(String json)
