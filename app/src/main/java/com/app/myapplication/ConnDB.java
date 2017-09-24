@@ -6,6 +6,9 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.StrictMode;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,6 +18,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -84,6 +88,15 @@ public class ConnDB
                     case Values.Web.LOAD_SHOPFOOD_SUCC:
                         json = msg.getData().getString("json");
                         ((FoodPage)msg.obj).onLoadFoodSucc(json);
+                        break;
+                    case Values.Web.LOAD_SHOPFOOD_FAIL:
+                        ((FoodPage)msg.obj).onLoadFoodFail();
+                        break;
+                    case Values.Web.SEND_ORDER_SUCC:
+                        ((PayPage)msg.obj).onSendOrderSucc();
+                        break;
+                    case Values.Web.SEND_ORDER_FAIL:
+                        ((PayPage)msg.obj).onSendOrderFail();
                         break;
                 }
             }
@@ -395,4 +408,78 @@ public class ConnDB
         });
         thread.start();
     }
+
+    public void sendOrder(final Context context, final String acc, final String shopID, final String tPrice, final ArrayList<FoodObj> foodList)
+    {
+        Thread thread =new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try
+                {
+                    Map<String,String> dataToSend = new HashMap<>();
+//                    dataToSend.put("acc", acc);
+//                    dataToSend.put("shop_id", shopID);
+//                    dataToSend.put("total_price", tPrice);
+//                    String encodedStr = getEncodedData(dataToSend);
+
+                    JSONArray array = new JSONArray();
+                    JSONObject obj = new JSONObject();
+
+                    obj.put("acc", acc);
+                    obj.put("shop_id", shopID);
+                    obj.put("total_price", tPrice);
+
+                    ArrayList<JSONObject> foodArray = new ArrayList<>();
+                    for(int i = 0; i < foodList.size(); i++){
+                        FoodObj foodObj = foodList.get(i);
+                        JSONObject fObj = new JSONObject();
+                        fObj.put("prod_id", foodObj.getProdID());
+                        fObj.put("prod_name", foodObj.getName());
+                        fObj.put("sale_qty", foodObj.getAmount());
+                        fObj.put("sale_price", foodObj.getPrice());
+                        fObj.put("total_price", foodObj.getTotalPrice());
+                        foodArray.add(fObj);
+                    }
+
+                    obj.put("foodArr", foodArray);
+                    array.put(obj);
+                    dataToSend.put("json", array.toString());
+                    String encodedStr = getEncodedData(dataToSend);
+
+                    String urlString = "https://nacl.000webhostapp.com/sendOrder.php";
+                    URL url = new URL(urlString);
+                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+                    //Writing dataToSend to outputstreamwriter
+//                    connection.setRequestMethod("POST");
+                    connection.setDoOutput(true);
+                    OutputStreamWriter writer = new OutputStreamWriter(connection.getOutputStream());
+                    writer.write(encodedStr);
+                    writer.flush();
+                    writer.close();
+
+                    Message msg = Message.obtain();
+                    InputStream inputStream = connection.getInputStream();//傳送資料&抓取回傳值
+                    String readStream = readStrem(inputStream);
+                    if(readStream.equals("1"))
+                    {
+                        msg.what = Values.Web.SEND_ORDER_SUCC;
+                    }
+                    else
+                    {
+                        msg.what = Values.Web.SEND_ORDER_FAIL;
+                    }
+                    msg.obj = context;
+                    mHandler.sendMessage(msg);
+                }
+                catch(Exception e)
+                {
+                    e.printStackTrace();
+                }
+            }
+        });
+        thread.start();
+    }
+
+
 }

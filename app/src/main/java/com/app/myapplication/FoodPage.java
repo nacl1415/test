@@ -18,6 +18,7 @@ import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
@@ -94,6 +95,7 @@ public class FoodPage extends AppCompatActivity implements NavigationView.OnNavi
 	protected void onResume() {
 		super.onResume();
 
+		mMemberMgr.clearFoodObj();
 		mProgress = new ProgressDialog(FoodPage.this);
 		mProgress.setTitle("資料讀取中");
 		mProgress.setMessage("請稍後...");
@@ -180,31 +182,40 @@ public class FoodPage extends AppCompatActivity implements NavigationView.OnNavi
 		});
 
 		amountEdit.setImeOptions(EditorInfo.IME_ACTION_DONE);
+		amountEdit.setInputType(InputType.TYPE_CLASS_NUMBER);
 		amountEdit.setText("0");
 		amountEdit.setTextColor(Color.WHITE);
 		amountEdit.setTextSize(20);
 		amountEdit.setEms(6);
 		amountEdit.setBackgroundColor(Color.TRANSPARENT);
 		amountEdit.setGravity(Gravity.CENTER);
-		amountEdit.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
 		layout3.addView(amountEdit);
+		amountEdit.setOnTouchListener(new View.OnTouchListener() {
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				amountEdit.setText("");
+				return false;
+			}
+		});
 		amountEdit.setOnEditorActionListener(new TextView.OnEditorActionListener() {
 			@Override
-			public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+			public boolean onEditorAction(TextView textViewv, int actionId, KeyEvent event) {
 				if (actionId == EditorInfo.IME_ACTION_SEARCH ||
                     actionId == EditorInfo.IME_ACTION_DONE ||
                     actionId == EditorInfo.IME_ACTION_NEXT)
 				{
 					int amount = 0;
 					try{
-						amount = Integer.valueOf(amountEdit.getText().toString());
+						amount = Integer.valueOf(textViewv.getText().toString());
 					}catch (Exception e){
 						amount = 0;
-						amountEdit.setText("0");
+						textViewv.setText("0");
 					}
-					mFoodList.get(prodID).setAmount(amount);
+					amount = mFoodList.get(prodID).setAmount(amount);
+					textViewv.setText("" + amount);
 					calcuTotalPrice();
-					return true;
+
+					return false;
 				}
 				return false;
 			}
@@ -225,7 +236,7 @@ public class FoodPage extends AppCompatActivity implements NavigationView.OnNavi
 		});
 
 		if(mFoodList.get(prodID) == null) {
-			FoodObj foodObj = new FoodObj(prodID, price);
+			FoodObj foodObj = new FoodObj(prodID, name, price);
 			mFoodList.put(prodID, foodObj);
 		}
 	}
@@ -234,6 +245,11 @@ public class FoodPage extends AppCompatActivity implements NavigationView.OnNavi
 	{
 		mProgress.dismiss();
 		showFoodList(json);
+	}
+
+	public void onLoadFoodFail()
+	{
+		mProgress.dismiss();
 	}
 
 	private void calcuTotalPrice()

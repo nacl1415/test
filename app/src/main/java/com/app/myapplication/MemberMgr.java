@@ -1,5 +1,6 @@
 package com.app.myapplication;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -17,8 +18,12 @@ public class MemberMgr {
         return instance;
     }
 
-    String mAccount = "test00";
+    String mAcc = "test00";
     String mPwd = "123";
+    String mName = "TEST";
+    String mPhone = "0985000000";
+    String mAddr = "台中市南區興大路145號";
+
     String mShopID = "1";
     String mSelectShopID = "1";
     boolean mIsLogin = false;
@@ -30,9 +35,13 @@ public class MemberMgr {
     {
     }
 
-    public void login(String acc, String pwd)
+    public void login(String acc, String pwd, String name, String phone, String addr)
     {
-
+        mAcc = acc;
+        mPwd = pwd;
+        mName = name;
+        mPhone = phone;
+        mAddr = addr;
     }
 
     public void logout()
@@ -42,7 +51,22 @@ public class MemberMgr {
 
     public String getAccount()
     {
-        return mAccount;
+        return mAcc;
+    }
+
+    public String getName()
+    {
+        return mName;
+    }
+
+    public String getPhone()
+    {
+        return mPhone;
+    }
+
+    public String getAddr()
+    {
+        return mAddr;
     }
 
     public String getShopID()
@@ -65,14 +89,6 @@ public class MemberMgr {
         return mSelectShopID;
     }
 
-    public void addBuyFoodObj(String prodID, String price)
-    {
-        FoodObj obj = new FoodObj(prodID, price);
-        if(mBuyFoodList.get(prodID) == null) {
-            mBuyFoodList.put(prodID, obj);
-        }
-    }
-
     public void addFoodObj(FoodObj foodObj)
     {
         String prodID = foodObj.getProdID();
@@ -90,13 +106,28 @@ public class MemberMgr {
         mBuyFoodList.remove(prodID);
     }
 
+    public void clearFoodObj()
+    {
+        mBuyFoodList.clear();
+    }
+
     public int getTotalPrice()
     {
         int totalPrice = 0;
         for (Object key : mBuyFoodList.keySet()) {
-            totalPrice = totalPrice + mBuyFoodList.get(key).getPrice();
+            totalPrice = totalPrice + mBuyFoodList.get(key).getTotalPrice();
         }
 
         return totalPrice;
+    }
+
+    public ArrayList<FoodObj> getFoodList()
+    {
+        ArrayList<FoodObj> arrayList = new ArrayList<>();
+        for (Object key : mBuyFoodList.keySet()) {
+            arrayList.add(mBuyFoodList.get(key));
+        }
+
+        return arrayList;
     }
 }

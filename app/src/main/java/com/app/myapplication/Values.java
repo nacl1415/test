@@ -36,5 +36,8 @@ public class Values {
         public static final int LOAD_FOOD_SUCC = 10;
         public static final int LOAD_FOOD_FAIL = 11;
         public static final int LOAD_SHOPFOOD_SUCC = 12;
+        public static final int LOAD_SHOPFOOD_FAIL = 13;
+        public static final int SEND_ORDER_SUCC = 14;
+        public static final int SEND_ORDER_FAIL = 15;
     }
 }

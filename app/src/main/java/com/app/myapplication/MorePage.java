@@ -13,6 +13,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+
+import java.util.ArrayList;
 
 public class MorePage extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener
 {
@@ -42,6 +45,25 @@ public class MorePage extends AppCompatActivity implements NavigationView.OnNavi
 
 		NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
 		navigationView.setNavigationItemSelectedListener(this);
+
+		//=====================================================
+
+		Button btn = (Button)findViewById(R.id.testBtn);
+		btn.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				ArrayList<FoodObj> arrayList = new ArrayList<FoodObj>();
+				for(int i = 0; i < 5; i++)
+				{
+					FoodObj obj = new FoodObj("" + (i + 1), "超級大漢堡" + i, "100");
+					obj.setAmount(i+1);
+					MemberMgr.getInstance().addFoodObj(obj);
+				}
+
+				Intent intent = new Intent(MorePage.this, PayPage.class);
+				startActivity(intent);
+			}
+		});
 	}
 
 	@Override

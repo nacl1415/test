@@ -28,22 +28,12 @@
             android:name=".IndexActivity"
             android:label="@string/title_activity_index"
             android:theme="@style/AppTheme.NoActionBar">
-
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-
         </activity>
         <activity android:name=".TestActivity" />
         <activity
             android:name=".UploadPage"
             android:label="@string/title_activity_upload_page"
-            android:theme="@style/AppTheme.NoActionBar">
-
-
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
             android:name=".CartPage"
             android:label="@string/title_activity_cart_page"
@@ -51,7 +41,14 @@
         <activity
             android:name=".MorePage"
             android:label="@string/title_activity_more_page"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".FoodPage"
             android:label="@string/title_activity_food_page"
@@ -63,11 +60,13 @@
         <activity
             android:name=".LoginPage"
             android:label="@string/title_activity_login_page"
-            android:theme="@style/AppTheme.NoActionBar">
-
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity android:name=".RegPage" />
-        <activity android:name=".AddFoodPage">
+        <activity android:name=".AddFoodPage"></activity>
+        <activity android:name=".PayPage">
+
+
+
         </activity>
     </application>
 
