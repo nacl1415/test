@@ -92,7 +92,7 @@
     </LinearLayout>
 
     <Button
-        android:id="@+id/uploadBtn"
+        android:id="@+id/editBtn"
         android:layout_width="0dp"
         android:layout_height="48dp"
         android:layout_column="0"

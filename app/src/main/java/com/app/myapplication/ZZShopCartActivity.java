@@ -3,11 +3,11 @@ package com.app.myapplication;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-public class ShopCartActivity extends AppCompatActivity {
+public class ZZShopCartActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_shop_cart);
+        setContentView(R.layout.activity_zzshop_cart);
     }
 }

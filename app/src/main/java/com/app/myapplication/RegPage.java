@@ -39,7 +39,8 @@ public class RegPage extends AppCompatActivity {
 
         //====================================================================================
 
-        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("會員注冊");
 
         mAccEdit = (EditText)findViewById(R.id.editAcc);
         mAccEdit.addTextChangedListener(new TextWatcher()
@@ -137,7 +138,7 @@ public class RegPage extends AppCompatActivity {
 
         mRegisterCheck = (CheckBox) findViewById(R.id.registerCheck);
 
-        Button btn = (Button)findViewById(R.id.uploadBtn);
+        Button btn = (Button)findViewById(R.id.editBtn);
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -171,6 +172,13 @@ public class RegPage extends AppCompatActivity {
                     mAddrEdit.setError("請填寫地址");
                     return;
                 }
+                if(!mAccEdit.getError().toString().equals("") ||
+                   !mPwdEdit.getError().toString().equals("") ||
+                   !mPhoneEdit.getError().toString().equals(""))
+                {
+                    mAddrEdit.setError("格式不正確");
+                    return;
+                }
 
                 if(!mRegisterCheck.isChecked())
                 {
@@ -197,6 +205,12 @@ public class RegPage extends AppCompatActivity {
 //                mConnDB.checkSQLHaveData(RegPage.this, Values.Web.REG_CHECK_PHONE, "phone", mPhone);
             }
         });
+    }
+
+    @Override
+    public boolean onSupportNavigateUp(){
+        finish();
+        return true;
     }
 
     public void onRegSucc()

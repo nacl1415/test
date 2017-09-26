@@ -1,6 +1,7 @@
 package com.app.myapplication;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
@@ -26,6 +27,8 @@ import java.util.regex.Pattern;
 public class RegisterPage extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    MemberMgr mMemberMgr = MemberMgr.getInstance();
+    Context mMyContext = RegisterPage.this;
     ConnDB mConnDB = ConnDB.getInstance();
     EditText mAccEdit;
     EditText mPwdEdit;
@@ -157,7 +160,7 @@ public class RegisterPage extends AppCompatActivity
 
         mRegisterCheck = (CheckBox) findViewById(R.id.registerCheck);
 
-        Button btn = (Button)findViewById(R.id.uploadBtn);
+        Button btn = (Button)findViewById(R.id.editBtn);
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -266,18 +269,28 @@ public class RegisterPage extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
+        if(id == R.id.nav_camera)
+        {
+            mMemberMgr.gotoPage(mMyContext, 0);
+        }
+        else if(id == R.id.nav_gallery)
+        {
+            mMemberMgr.gotoPage(mMyContext, 1);
+        }
+        else if(id == R.id.nav_slideshow)
+        {
+            mMemberMgr.gotoPage(mMyContext, 2);
+        }
+        else if(id == R.id.nav_manage)
+        {
+            mMemberMgr.gotoPage(mMyContext, 3);
+        }
+        else if(id == R.id.nav_share)
+        {
+            mMemberMgr.gotoPage(mMyContext, 4);
+        }
+        else if(id == R.id.nav_send)
+        {
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

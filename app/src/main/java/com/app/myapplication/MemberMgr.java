@@ -1,5 +1,8 @@
 package com.app.myapplication;
 
+import android.content.Context;
+import android.content.Intent;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -23,11 +26,13 @@ public class MemberMgr {
     String mName = "TEST";
     String mPhone = "0985000000";
     String mAddr = "台中市南區興大路145號";
-
     String mShopID = "1";
     String mSelectShopID = "1";
+
     boolean mIsLogin = false;
-    int mCurrPage = 0;
+    int mWho = Values.who.NONE;
+    boolean mIsNeedLoadBuyerOrder = true;
+    boolean mIsNeedLoadSaleOrder = true;
 
     HashMap<String, FoodObj> mBuyFoodList = new HashMap<>();
 
@@ -35,18 +40,33 @@ public class MemberMgr {
     {
     }
 
-    public void login(String acc, String pwd, String name, String phone, String addr)
+    public void login(String acc, String pwd, String name, String phone, String addr, String shopID)
     {
         mAcc = acc;
         mPwd = pwd;
         mName = name;
         mPhone = phone;
         mAddr = addr;
+        mShopID = shopID;
+        mIsLogin = true;
+    }
+
+    public void setisLogin()
+    {
+        mIsLogin = true;
     }
 
     public void logout()
     {
-
+        mAcc = "";
+        mPwd = "";
+        mName = "";
+        mPhone = "";
+        mAddr = "";
+        mShopID = "";
+        mSelectShopID = "";
+        mIsLogin = false;
+        mWho = Values.who.NONE;
     }
 
     public String getAccount()
@@ -129,5 +149,89 @@ public class MemberMgr {
         }
 
         return arrayList;
+    }
+
+    public void setWho(int who)
+    {
+        mWho = who;
+    }
+
+    public int getWho()
+    {
+        return mWho;
+    }
+
+    public void setIsNeedLoadBuyerOrder(boolean isNeedLoad)
+    {
+        mIsNeedLoadBuyerOrder = isNeedLoad;
+    }
+
+    public void setIsNeedLoadSaleOrder(boolean isNeedLoad)
+    {
+        mIsNeedLoadSaleOrder = isNeedLoad;
+    }
+
+    public boolean isNeedLoadBuyerOrder()
+    {
+        return mIsNeedLoadBuyerOrder;
+    }
+
+    public boolean isNeedLoadSaleOrder()
+    {
+        return mIsNeedLoadSaleOrder;
+    }
+
+    public void gotoPage(Context context, int index)
+    {
+        switch (index)
+        {
+            case Values.PageIndex.Index://shop
+                context.startActivity(new Intent(context, IndexActivity.class));
+                break;
+            case Values.PageIndex.CART://cart
+                setWho(Values.who.BUYER);
+                if(mIsLogin)
+                {
+                    setIsNeedLoadBuyerOrder(true);
+                    context.startActivity(new Intent(context, CartPage.class));
+                }
+                else
+                {
+                    context.startActivity(new Intent(context, LoginPage.class));
+                }
+                break;
+            case Values.PageIndex.UPLOAD://upload
+                if(mIsLogin)
+                {
+                    context.startActivity(new Intent(context, UploadPage.class));
+                }
+                else
+                {
+                    context.startActivity(new Intent(context, LoginPage.class));
+                }
+                break;
+            case Values.PageIndex.ORDER://order (cart)
+                setWho(Values.who.SALER);
+                if(mIsLogin)
+                {
+                    setIsNeedLoadBuyerOrder(true);
+                    context.startActivity(new Intent(context, CartPage.class));
+                }
+                else
+                {
+                    context.startActivity(new Intent(context, LoginPage.class));
+                }
+                break;
+            case Values.PageIndex.MEMBER:
+                if(mIsLogin)
+                {
+                    context.startActivity(new Intent(context, MemberPage.class));
+                }
+                else
+                {
+                    context.startActivity(new Intent(context, LoginPage.class));
+                }
+                break;
+        }
     }
 }

@@ -1,6 +1,7 @@
 package com.app.myapplication;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -45,6 +46,8 @@ public class FoodPage extends AppCompatActivity implements NavigationView.OnNavi
 	LinearLayout mMainLayout;
 	TextView mTotalPriceView;
 
+	Context mMyContext = FoodPage.this;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
@@ -73,13 +76,22 @@ public class FoodPage extends AppCompatActivity implements NavigationView.OnNavi
 
 		//==================================================
 
+		getSupportActionBar().setTitle("瀏覽餐點");
+
 		mMainLayout = (LinearLayout)findViewById(R.id.mainLayout);
 		mTotalPriceView = (TextView) findViewById(R.id.tPriceView);
 		Button payBtn = (Button)findViewById(R.id.payButton);
 		payBtn.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				for (Object key : mFoodList.keySet()) {
+					FoodObj obj = mFoodList.get(key);
+					if(obj.getAmount() > 0)
+						mMemberMgr.addFoodObj(obj);
+				}
 
+				Intent intent = new Intent(mMyContext, PayPage.class);
+				startActivity(intent);
 			}
 		});
 //		createFood(R.drawable.a00);
@@ -256,13 +268,13 @@ public class FoodPage extends AppCompatActivity implements NavigationView.OnNavi
 	{
 		int totalPrice = 0;
 		for (Object key : mFoodList.keySet()) {
-			totalPrice = totalPrice + mFoodList.get(key).getPrice();
+			totalPrice = totalPrice + mFoodList.get(key).getTotalPrice();
 		}
 
 		mTotalPriceView.setText("" + totalPrice);
 	}
 
-	protected void showFoodList(String json)
+	private void showFoodList(String json)
 	{
 		try
 		{
@@ -337,22 +349,23 @@ public class FoodPage extends AppCompatActivity implements NavigationView.OnNavi
 
 		if(id == R.id.nav_camera)
 		{
-			startActivity(new Intent(FoodPage.this, IndexActivity.class));
+			mMemberMgr.gotoPage(mMyContext, 0);
 		}
 		else if(id == R.id.nav_gallery)
 		{
-			startActivity(new Intent(FoodPage.this, UploadPage.class));
+			mMemberMgr.gotoPage(mMyContext, 1);
 		}
 		else if(id == R.id.nav_slideshow)
 		{
-			startActivity(new Intent(FoodPage.this, CartPage.class));
+			mMemberMgr.gotoPage(mMyContext, 2);
 		}
 		else if(id == R.id.nav_manage)
 		{
-			startActivity(new Intent(FoodPage.this, MorePage.class));
+			mMemberMgr.gotoPage(mMyContext, 3);
 		}
 		else if(id == R.id.nav_share)
 		{
+			mMemberMgr.gotoPage(mMyContext, 4);
 		}
 		else if(id == R.id.nav_send)
 		{

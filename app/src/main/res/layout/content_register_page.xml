@@ -4,11 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/bk_img_02"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.app.myapplication.RegisterPage"
-    tools:showIn="@layout/app_bar_register_page"
+    tools:layout_editor_absoluteX="0dp"
     tools:layout_editor_absoluteY="81dp"
-    tools:layout_editor_absoluteX="0dp">
+    tools:showIn="@layout/app_bar_register_page">
 
     <LinearLayout
         android:layout_width="344dp"
@@ -143,13 +144,13 @@
             android:layout_marginStart="1dp"
             android:layout_row="5"
             android:text="我同意遵守會員守則"
-            app:layout_constraintBottom_toTopOf="@+id/uploadBtn"
-            app:layout_constraintLeft_toLeftOf="@+id/uploadBtn"
+            app:layout_constraintBottom_toTopOf="@+id/editBtn"
+            app:layout_constraintLeft_toLeftOf="@+id/editBtn"
             tools:layout_constraintBottom_creator="1"
             tools:layout_constraintLeft_creator="1" />
 
         <Button
-            android:id="@+id/uploadBtn"
+            android:id="@+id/editBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_column="0"

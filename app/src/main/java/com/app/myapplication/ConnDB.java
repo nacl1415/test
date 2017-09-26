@@ -6,7 +6,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.StrictMode;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -52,7 +51,8 @@ public class ConnDB
                 String json = "";
                 switch (msg.what) {
                     case Values.Web.LOGIN_SUCC:
-                        ((LoginPage)msg.obj).onLoginSucc();
+                        json = msg.getData().getString("json");
+                        ((LoginPage)msg.obj).onLoginSucc(json);
                         break;
                     case Values.Web.LOGIN_FAIL:
                         ((LoginPage)msg.obj).onLoginFail();
@@ -98,6 +98,13 @@ public class ConnDB
                     case Values.Web.SEND_ORDER_FAIL:
                         ((PayPage)msg.obj).onSendOrderFail();
                         break;
+                    case Values.Web.GET_ORDER_SUCC:
+                        json = msg.getData().getString("json");
+                        ((CartPage)msg.obj).onGetOrderSucc(json);
+                        break;
+                    case Values.Web.GET_ORDER_FAIL:
+                        ((CartPage)msg.obj).onGetOrderFail();
+                        break;
                 }
             }
         };
@@ -135,15 +142,18 @@ public class ConnDB
                     Message msg = Message.obtain();
                     InputStream inputStream = connection.getInputStream();//傳送資料&抓取回傳值
                     String readStream = readStrem(inputStream);
-                    if (readStream.equals("1")) {
+                    if (!readStream.equals("0")) {
                         msg.what = Values.Web.LOGIN_SUCC;
+                        Bundle bundle = new Bundle();
+                        bundle.putString("json", readStream);
+                        msg.setData(bundle);
                     } else {
                         msg.what = Values.Web.LOGIN_FAIL;
                     }
                     msg.obj = context;
                     mHandler.sendMessage(msg);
                 }
-                catch(IOException e)
+                catch(Exception e)
                 {
                     e.printStackTrace();
                 }
@@ -386,10 +396,6 @@ public class ConnDB
                     Message msg = Message.obtain();
                     InputStream inputStream = connection.getInputStream();
                     String readStream = readStrem(inputStream);
-//                    BufferedReader streamReader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
-//                    while ((inputStr = streamReader.readLine()) != null){
-//                        jsonStr = jsonStr + inputStr;
-//                    }
                     msg.what = Values.Web.LOAD_FOOD_SUCC;
                     if(isShop)
                         msg.what = Values.Web.LOAD_SHOPFOOD_SUCC;
@@ -409,7 +415,9 @@ public class ConnDB
         thread.start();
     }
 
-    public void sendOrder(final Context context, final String acc, final String shopID, final String tPrice, final ArrayList<FoodObj> foodList)
+    public void sendOrder(final Context context, final String acc, final String shopID,
+                          final String tPrice, final String name, final String phone,
+                          final String addr, final ArrayList<FoodObj> foodList)
     {
         Thread thread =new Thread(new Runnable() {
             @Override
@@ -417,36 +425,48 @@ public class ConnDB
                 try
                 {
                     Map<String,String> dataToSend = new HashMap<>();
-//                    dataToSend.put("acc", acc);
-//                    dataToSend.put("shop_id", shopID);
-//                    dataToSend.put("total_price", tPrice);
-//                    String encodedStr = getEncodedData(dataToSend);
-
-                    JSONArray array = new JSONArray();
-                    JSONObject obj = new JSONObject();
-
-                    obj.put("acc", acc);
-                    obj.put("shop_id", shopID);
-                    obj.put("total_price", tPrice);
-
+                    dataToSend.put("acc", acc);
+                    dataToSend.put("shop_id", shopID);
+                    dataToSend.put("total_price", tPrice);
+                    dataToSend.put("name", name);
+                    dataToSend.put("phone", phone);
+                    dataToSend.put("addr", addr);
+                    String str = "";
                     ArrayList<JSONObject> foodArray = new ArrayList<>();
                     for(int i = 0; i < foodList.size(); i++){
                         FoodObj foodObj = foodList.get(i);
-                        JSONObject fObj = new JSONObject();
-                        fObj.put("prod_id", foodObj.getProdID());
-                        fObj.put("prod_name", foodObj.getName());
-                        fObj.put("sale_qty", foodObj.getAmount());
-                        fObj.put("sale_price", foodObj.getPrice());
-                        fObj.put("total_price", foodObj.getTotalPrice());
-                        foodArray.add(fObj);
+                        String name = foodObj.getName();
+                        String amount = "" + foodObj.getAmount();
+                        str = str + name + "!" + amount + "&";
                     }
-
-                    obj.put("foodArr", foodArray);
-                    array.put(obj);
-                    dataToSend.put("json", array.toString());
+                    dataToSend.put("contect", str);
                     String encodedStr = getEncodedData(dataToSend);
 
-                    String urlString = "https://nacl.000webhostapp.com/sendOrder.php";
+//                    JSONArray array = new JSONArray();
+//                    JSONObject obj = new JSONObject();
+//
+//                    obj.put("acc", acc);
+//                    obj.put("shop_id", shopID);
+//                    obj.put("total_price", tPrice);
+//
+//                    ArrayList<JSONObject> foodArray = new ArrayList<>();
+//                    for(int i = 0; i < foodList.size(); i++){
+//                        FoodObj foodObj = foodList.get(i);
+//                        JSONObject fObj = new JSONObject();
+//                        fObj.put("prod_id", foodObj.getProdID());
+//                        fObj.put("prod_name", foodObj.getName());
+//                        fObj.put("sale_qty", foodObj.getAmount());
+//                        fObj.put("sale_price", foodObj.getPrice());
+//                        fObj.put("total_price", foodObj.getTotalPrice());
+//                        foodArray.add(fObj);
+//                    }
+
+//                    obj.put("food_arr", foodArray);
+//                    array.put(obj);
+//                    dataToSend.put("json", array.toString());
+//                    String encodedStr = getEncodedData(dataToSend);
+
+                    String urlString = "https://nacl.000webhostapp.com/sendOrder2.php";
                     URL url = new URL(urlString);
                     HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
@@ -481,5 +501,50 @@ public class ConnDB
         thread.start();
     }
 
+    public void getOrder(final Context context, final String type, final String value)
+    {
+        Thread thread =new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Map<String, String> dataToSend = new HashMap<>();
+                    dataToSend.put("type", type);
+                    dataToSend.put("value", value);
+                    String encodedStr = getEncodedData(dataToSend);
 
+                    String urlString = "https://nacl.000webhostapp.com/getOrder.php";
+                    URL url = new URL(urlString);
+                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+                    connection.setDoOutput(true);
+                    OutputStreamWriter writer = new OutputStreamWriter(connection.getOutputStream());
+                    writer.write(encodedStr);
+                    writer.flush();
+                    writer.close();
+
+                    Message msg = Message.obtain();
+                    InputStream inputStream = connection.getInputStream();//傳送資料&抓取回傳值
+                    String readStream = readStrem(inputStream);
+                    msg.what = Values.Web.GET_ORDER_SUCC;
+                    Bundle bundle = new Bundle();
+                    bundle.putString("json", readStream);
+                    msg.setData(bundle);
+                    msg.obj = context;
+                    mHandler.sendMessage(msg);
+                }
+                catch(Exception e)
+                {
+                    e.printStackTrace();
+                    Message msg = Message.obtain();
+                    msg.what = Values.Web.GET_ORDER_FAIL;
+                    Bundle bundle = new Bundle();
+                    bundle.putString("json", "");
+                    msg.setData(bundle);
+                    msg.obj = context;
+                    mHandler.sendMessage(msg);
+                }
+            }
+        });
+        thread.start();
+    }
 }

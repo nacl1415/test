@@ -53,7 +53,7 @@ public class MorePage extends AppCompatActivity implements NavigationView.OnNavi
 			@Override
 			public void onClick(View v) {
 				ArrayList<FoodObj> arrayList = new ArrayList<FoodObj>();
-				for(int i = 0; i < 5; i++)
+				for(int i = 0; i < 2; i++)
 				{
 					FoodObj obj = new FoodObj("" + (i + 1), "超級大漢堡" + i, "100");
 					obj.setAmount(i+1);

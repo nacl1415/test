@@ -43,6 +43,9 @@ public class AddFoodPage extends AppCompatActivity {
 
         //=================================================
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("編輯餐點");
+
         mEditName = (EditText) findViewById(R.id.editName);
         mEditPrice = (EditText) findViewById(R.id.editPrice);
         mEditPrice.addTextChangedListener(new TextWatcher()
@@ -82,7 +85,7 @@ public class AddFoodPage extends AppCompatActivity {
             }
         });
 
-        Button btn = (Button)findViewById(R.id.uploadBtn);
+        Button btn = (Button)findViewById(R.id.editBtn);
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -104,12 +107,20 @@ public class AddFoodPage extends AppCompatActivity {
     {
         mProgress.dismiss();
         Toast.makeText(this, "Succ", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(AddFoodPage.this, UploadPage.class);
+        startActivity(intent);
     }
 
     public void onAddFoodFail()
     {
         mProgress.dismiss();
         Toast.makeText(this, "Fail", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public boolean onSupportNavigateUp(){
+        finish();
+        return true;
     }
 
     @Override

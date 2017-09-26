@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Random;
 
-public class TestActivity extends AppCompatActivity
+public class ZZTestActivity extends AppCompatActivity
 {
 	float MAX_WIDTH = 550;
 	float MAX_HEIGHT = 930;
@@ -43,7 +43,7 @@ public class TestActivity extends AppCompatActivity
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_test);
+		setContentView(R.layout.activity_zztest);
 
 		ConstraintLayout main = (ConstraintLayout)findViewById(R.id.main);
 
@@ -120,7 +120,7 @@ public class TestActivity extends AppCompatActivity
 			@Override
 			public void onClick(View view)
 			{
-				Toast.makeText(TestActivity.this, "GGG", Toast.LENGTH_SHORT).show();
+				Toast.makeText(ZZTestActivity.this, "GGG", Toast.LENGTH_SHORT).show();
 			}
 		});
 
@@ -202,6 +202,6 @@ public class TestActivity extends AppCompatActivity
 	@Override
 	public void onBackPressed()
 	{
-		Toast.makeText(TestActivity.this, "NO BACK", Toast.LENGTH_SHORT).show();
+		Toast.makeText(ZZTestActivity.this, "NO BACK", Toast.LENGTH_SHORT).show();
 	}
 }

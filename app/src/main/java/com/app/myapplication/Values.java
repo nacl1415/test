@@ -39,5 +39,21 @@ public class Values {
         public static final int LOAD_SHOPFOOD_FAIL = 13;
         public static final int SEND_ORDER_SUCC = 14;
         public static final int SEND_ORDER_FAIL = 15;
+        public static final int GET_ORDER_SUCC = 16;
+        public static final int GET_ORDER_FAIL = 17;
+    }
+
+    public class who {
+        public static final int NONE = 0;
+        public static final int BUYER = 1;
+        public static final int SALER = 2;
+    }
+
+    public class PageIndex {
+        public static final int Index = 0;
+        public static final int CART = 1;
+        public static final int UPLOAD = 2;
+        public static final int ORDER = 3;
+        public static final int MEMBER = 4;
     }
 }

@@ -1,7 +1,7 @@
 package com.app.myapplication;
 
-import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -10,35 +10,25 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-public class LoginPage extends AppCompatActivity
+public class MemberPage extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     MemberMgr mMemberMgr = MemberMgr.getInstance();
-    Context mMyContext = LoginPage.this;
-    EditText mAccEdit;
-    EditText mPwdEdit;
-    TextView mInfoView;
-    ProgressDialog mProgress;
+    Context mMyContext = MemberPage.this;
+    AlertDialog.Builder mDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login_page);
+        setContentView(R.layout.activity_member_page);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -60,106 +50,39 @@ public class LoginPage extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        //=====================================================================================
+        //======================================================================
 
-        getSupportActionBar().setTitle("會員登入");
+        getSupportActionBar().setTitle("會員");
 
-        mAccEdit = (EditText)findViewById(R.id.login_editAcc);
-        mPwdEdit = (EditText)findViewById(R.id.editPwd);
-        mInfoView = (TextView)findViewById(R.id.infoView);
-
-        Button btn = (Button)findViewById(R.id.login_loginBtn);
+        Button btn = (Button)findViewById(R.id.editDataBtn);
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mInfoView.setText("");
-                if(mAccEdit.getText().toString().trim().equals(""))
-                {
-                    mAccEdit.setError("請填寫帳號");
-                    return;
-                }
-                if(mPwdEdit.getText().toString().trim().equals(""))
-                {
-                    mPwdEdit.setError("請填寫密碼");
-                    return;
-                }
-
-                hideKeyboard();
-
-                final String acc = mAccEdit.getText().toString();
-                final String pwd = mPwdEdit.getText().toString();
-                //Toast.makeText(LoginPage.this, "Acc:" + acc + ", Pwd:" + pwd, Toast.LENGTH_SHORT).show();
-
-                mProgress = new ProgressDialog(LoginPage.this);
-                mProgress.setTitle("登入中");
-                mProgress.setMessage("請稍後...");
-                mProgress.setCancelable(false); // disable dismiss by tapping outside of the dialog
-                mProgress.show();
-
-                ConnDB conn = ConnDB.getInstance();
-                conn.login(LoginPage.this, acc, pwd);
+                startActivity(new Intent(mMyContext, MemberEditPage.class));
             }
         });
 
-        btn = (Button)findViewById(R.id.login_registerBtn);
+        btn = (Button)findViewById(R.id.logoutBtn);
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(LoginPage.this, RegPage.class);
-                startActivity(intent);
+                mDialog = new AlertDialog.Builder(MemberPage.this);
+                mDialog.setTitle("會員登出");
+                mDialog.setMessage("確定要登出嗎?");
+                mDialog.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        mMemberMgr.logout();
+                    }
+                });
+                mDialog.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                });
+                mDialog.show();
             }
         });
-    }
-
-    public void onLoginSucc(String json)
-    {
-        mProgress.dismiss();
-        Toast.makeText(this, "登入成功", Toast.LENGTH_SHORT).show();
-
-        try
-        {
-            JSONObject jsonObj = new JSONObject(json);
-            JSONArray mJsonArray = jsonObj.getJSONArray("result");
-
-            for(int i = 0; i < mJsonArray.length(); i++)
-            {
-                JSONObject c = mJsonArray.getJSONObject(i);
-                String acc = c.getString("acc");
-                String pwd = c.getString("pwd");
-                String name = c.getString("name");
-                String phone = c.getString("phone");
-                String addr = c.getString("addr");
-                String shopID = "1";
-
-
-                mMemberMgr.login(acc, pwd, name, phone, addr, shopID);
-//				mTextView.setText(
-//					mTextView.getText().toString() + "N:" + name + ", P:" +
-//							price +", I:" + img + "\n");
-            }
-        }
-        catch (JSONException e)
-        {
-            e.printStackTrace();
-        }
-
-//        mMemberMgr.setisLogin();
-        mMemberMgr.gotoPage(mMyContext, Values.PageIndex.Index);
-    }
-
-    public void onLoginFail()
-    {
-        mProgress.dismiss();
-        Toast.makeText(this, "登入失敗", Toast.LENGTH_SHORT).show();
-        mInfoView.setText("登入失敗");
-    }
-
-    private void hideKeyboard() {
-        View viewFocus = this.getCurrentFocus();
-        if (viewFocus != null) {
-            InputMethodManager imManager = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-            imManager.hideSoftInputFromWindow(viewFocus.getWindowToken(), 0);
-        }
     }
 
     @Override
@@ -175,7 +98,7 @@ public class LoginPage extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.login_page, menu);
+        getMenuInflater().inflate(R.menu.member_page, menu);
         return true;
     }
 
@@ -218,7 +141,6 @@ public class LoginPage extends AppCompatActivity
         }
         else if(id == R.id.nav_share)
         {
-            mMemberMgr.gotoPage(mMyContext, 4);
         }
         else if(id == R.id.nav_send)
         {

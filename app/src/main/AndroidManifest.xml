@@ -16,31 +16,17 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity" />
-        <activity android:name=".MemberActivity" />
-        <activity android:name=".ShopCartActivity" />
-        <activity android:name=".OptionActivity" />
-        <activity android:name=".MyShopActivity" />
+        <activity android:name=".LogoPage" />
+        <activity android:name=".ZZMemberActivity" />
+        <activity android:name=".ZZShopCartActivity" />
+        <activity android:name=".ZZOptionActivity" />
+        <activity android:name=".ZZMyShopActivity" />
         <activity
-            android:name=".LoginActivity"
+            android:name=".ZZLoginActivity"
             android:label="@string/title_activity_login" />
         <activity
             android:name=".IndexActivity"
             android:label="@string/title_activity_index"
-            android:theme="@style/AppTheme.NoActionBar">
-        </activity>
-        <activity android:name=".TestActivity" />
-        <activity
-            android:name=".UploadPage"
-            android:label="@string/title_activity_upload_page"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
-        <activity
-            android:name=".CartPage"
-            android:label="@string/title_activity_cart_page"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".MorePage"
-            android:label="@string/title_activity_more_page"
             android:theme="@style/AppTheme.NoActionBar">
 
             <intent-filter>
@@ -48,7 +34,22 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
+        <activity android:name=".ZZTestActivity" />
+        <activity
+            android:name=".UploadPage"
+            android:label="@string/title_activity_upload_page"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".CartPage"
+            android:label="@string/title_activity_cart_page"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+        <activity
+            android:name=".MorePage"
+            android:label="@string/title_activity_more_page"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".FoodPage"
             android:label="@string/title_activity_food_page"
@@ -60,14 +61,16 @@
         <activity
             android:name=".LoginPage"
             android:label="@string/title_activity_login_page"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".RegPage" />
-        <activity android:name=".AddFoodPage"></activity>
-        <activity android:name=".PayPage">
-
-
-
-        </activity>
+        <activity android:name=".AddFoodPage" />
+        <activity android:name=".PayPage" />
+        <activity android:name=".DetailPage" />
+        <activity
+            android:name=".MemberPage"
+            android:label="@string/title_activity_member_page"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".MemberEditPage"></activity>
     </application>
 
 </manifest>

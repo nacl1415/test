@@ -18,12 +18,12 @@
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="menu_0">商品</string>
-    <string name="menu_1">購物車</string>
-    <string name="menu_2">上架</string>
-    <string name="menu_3">訂單</string>
-    <string name="comm_0">分享</string>
-    <string name="comm_1">回報</string>
+    <string name="menu_0">商店街</string>
+    <string name="menu_1">購物訂單</string>
+    <string name="menu_2">賣家上架</string>
+    <string name="menu_3">銷售訂單</string>
+    <string name="comm_0">會員</string>
+    <string name="comm_1">分享</string>
     <string name="title_activity_upload_page">UploadPage</string>
 
     <string name="action_settings">Settings</string>
@@ -32,5 +32,6 @@
     <string name="title_activity_food_page">FoodPage</string>
     <string name="title_activity_register_page">RegisterPage</string>
     <string name="title_activity_login_page">LoginPage</string>
+    <string name="title_activity_member_page">MemberPage</string>
     <!--<string name="action_settings">Settings</string>-->
 </resources>

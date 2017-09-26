@@ -1,6 +1,7 @@
 package com.app.myapplication;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -27,6 +28,8 @@ import org.json.JSONObject;
 
 public class UploadPage extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener
 {
+	MemberMgr mMemberMgr = MemberMgr.getInstance();
+	Context mMyContext = UploadPage.this;
 	ProgressDialog mProgress;
 	LinearLayout mMainLayout;
 	ImgCreater mImgCreater = ImgCreater.getInstance();
@@ -59,6 +62,8 @@ public class UploadPage extends AppCompatActivity implements NavigationView.OnNa
 		navigationView.setNavigationItemSelectedListener(this);
 
 		//==============================================================================
+
+		getSupportActionBar().setTitle("餐點上架");
 
 		mMainLayout = (LinearLayout)findViewById(R.id.mainLayout);
 //		mTextView = (TextView)findViewById(R.id.textView);
@@ -218,21 +223,22 @@ public class UploadPage extends AppCompatActivity implements NavigationView.OnNa
 
 		if(id == R.id.nav_camera)
 		{
-			startActivity(new Intent(UploadPage.this, IndexActivity.class));
+			mMemberMgr.gotoPage(mMyContext, 0);
 		}
 		else if(id == R.id.nav_gallery)
 		{
+			mMemberMgr.gotoPage(mMyContext, 1);
 		}
 		else if(id == R.id.nav_slideshow)
 		{
-			startActivity(new Intent(UploadPage.this, CartPage.class));
 		}
 		else if(id == R.id.nav_manage)
 		{
-			startActivity(new Intent(UploadPage.this, MorePage.class));
+			mMemberMgr.gotoPage(mMyContext, 3);
 		}
 		else if(id == R.id.nav_share)
 		{
+			mMemberMgr.gotoPage(mMyContext, 4);
 		}
 		else if(id == R.id.nav_send)
 		{

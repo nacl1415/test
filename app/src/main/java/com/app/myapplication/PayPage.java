@@ -2,6 +2,7 @@ package com.app.myapplication;
 
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
@@ -16,11 +17,18 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import static com.app.myapplication.R.id.editAddr;
+import static com.app.myapplication.R.id.editName;
+import static com.app.myapplication.R.id.editPhone;
+
 public class PayPage extends AppCompatActivity {
 
     MemberMgr mMemberMgr = MemberMgr.getInstance();
     AlertDialog.Builder mDialog;
     ProgressDialog mProgress;
+    EditText mEditName;
+    EditText mEditPhone;
+    EditText mEditAddr;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,16 +41,15 @@ public class PayPage extends AppCompatActivity {
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setTitle("確認訂單");
 
-        EditText editName = (EditText)findViewById(R.id.editName);
-        EditText editPhone = (EditText)findViewById(R.id.editPhone);
-        EditText editAddr = (EditText)findViewById(R.id.editAddr);
+        mEditName = (EditText)findViewById(editName);
+        mEditPhone = (EditText)findViewById(editPhone);
+        mEditAddr = (EditText)findViewById(editAddr);
         TextView totalPriceView = (TextView)findViewById(R.id.totalPriceView);
 
-        editName.setText(mMemberMgr.getName());
-        editPhone.setText(mMemberMgr.getPhone());
-        editAddr.setText(mMemberMgr.getAddr());
+        mEditName.setText(mMemberMgr.getName());
+        mEditPhone.setText(mMemberMgr.getPhone());
+        mEditAddr.setText(mMemberMgr.getAddr());
         totalPriceView.setText("總價:" + mMemberMgr.getTotalPrice());
-
 
         ArrayList<FoodObj> list = mMemberMgr.getFoodList();
         String[] item = new String[list.size()];
@@ -71,6 +78,9 @@ public class PayPage extends AppCompatActivity {
                         mMemberMgr.getAccount(),
                         mMemberMgr.getSelectShopID(),
                         mMemberMgr.getTotalPrice() + "",
+                        mEditName.getText().toString(),
+                        mEditPhone.getText().toString(),
+                        mEditAddr.getText().toString(),
                         mMemberMgr.getFoodList());
             }
         });
@@ -92,7 +102,10 @@ public class PayPage extends AppCompatActivity {
     public void onSendOrderSucc()
     {
         mProgress.dismiss();
+        mMemberMgr.setIsNeedLoadBuyerOrder(true);
         Toast.makeText(this, "SUCC", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(PayPage.this, CartPage.class);
+        startActivity(intent);
     }
 
     public void onSendOrderFail()
