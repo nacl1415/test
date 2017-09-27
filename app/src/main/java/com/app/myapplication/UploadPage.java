@@ -29,10 +29,10 @@ import org.json.JSONObject;
 public class UploadPage extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener
 {
 	MemberMgr mMemberMgr = MemberMgr.getInstance();
+	ImgCreater mImgCreater = ImgCreater.getInstance();
 	Context mMyContext = UploadPage.this;
 	ProgressDialog mProgress;
 	LinearLayout mMainLayout;
-	ImgCreater mImgCreater = ImgCreater.getInstance();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -66,12 +66,6 @@ public class UploadPage extends AppCompatActivity implements NavigationView.OnNa
 		getSupportActionBar().setTitle("餐點上架");
 
 		mMainLayout = (LinearLayout)findViewById(R.id.mainLayout);
-//		mTextView = (TextView)findViewById(R.id.textView);
-//		createFood("AA", "1", "a00", "1");
-//		createFood("AA", "2", "a01", "1");
-//		createFood("AA", "3", "a02", "1");
-//		createFood("AA", "4", "a03", "1");
-//		createFood("AA", "5", "a04", "1");
 	}
 
 	@Override
@@ -160,9 +154,6 @@ public class UploadPage extends AppCompatActivity implements NavigationView.OnNa
 				String shopID = c.getString("shop_id");
 
 				createFood(name, price, img, shopID);
-//				mTextView.setText(
-//					mTextView.getText().toString() + "N:" + name + ", P:" +
-//							price +", I:" + img + "\n");
 			}
 		}
 		catch (JSONException e)
@@ -242,6 +233,7 @@ public class UploadPage extends AppCompatActivity implements NavigationView.OnNa
 		}
 		else if(id == R.id.nav_send)
 		{
+			mMemberMgr.exitApp(mMyContext);
 		}
 
 		DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

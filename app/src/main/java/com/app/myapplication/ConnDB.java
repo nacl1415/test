@@ -45,6 +45,7 @@ public class ConnDB
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
+        //handle every Event
         mHandler = new Handler() {
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);
@@ -105,20 +106,19 @@ public class ConnDB
                     case Values.Web.GET_ORDER_FAIL:
                         ((CartPage)msg.obj).onGetOrderFail();
                         break;
+                    case Values.Web.LOGIN_TEMP_SUCC:
+                        json = msg.getData().getString("json");
+                        ((LoginTempPage)msg.obj).onLoginSucc(json);
+                        break;
+                    case Values.Web.LOGIN_TEMP_FAIL:
+                        ((LoginTempPage)msg.obj).onLoginFail();
+                        break;
                 }
             }
         };
-
-//        Thread thread =new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//
-//            }
-//        });
-//        thread.start();
     }
 
-    public void login(final Context context, final String acc, final String pwd)
+    public void login(final Context context, final String acc, final String pwd, final boolean isTemp)
     {
         Thread thread =new Thread(new Runnable() {
             @Override
@@ -143,12 +143,19 @@ public class ConnDB
                     InputStream inputStream = connection.getInputStream();//傳送資料&抓取回傳值
                     String readStream = readStrem(inputStream);
                     if (!readStream.equals("0")) {
-                        msg.what = Values.Web.LOGIN_SUCC;
+                        if(isTemp)
+                            msg.what = Values.Web.LOGIN_TEMP_SUCC;
+                        else
+                            msg.what = Values.Web.LOGIN_SUCC;
+
                         Bundle bundle = new Bundle();
                         bundle.putString("json", readStream);
                         msg.setData(bundle);
                     } else {
-                        msg.what = Values.Web.LOGIN_FAIL;
+                        if(isTemp)
+                            msg.what = Values.Web.LOGIN_TEMP_FAIL;
+                        else
+                            msg.what = Values.Web.LOGIN_FAIL;
                     }
                     msg.obj = context;
                     mHandler.sendMessage(msg);
@@ -256,31 +263,6 @@ public class ConnDB
         thread.start();
     }
 
-    private String getData()
-    {
-        String inputStr ="";
-        String jsonStr = "";
-        String urlString= "http://nacl.000webhostapp.com/getSQL.php";
-        try
-        {
-            URL url = new URL(urlString);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.connect();
-
-            InputStream is = connection.getInputStream();
-            BufferedReader streamReader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
-            while ((inputStr = streamReader.readLine()) != null){
-                jsonStr = jsonStr + inputStr;
-            }
-        }
-        catch(IOException e)
-        {
-            e.printStackTrace();
-        }
-
-        return jsonStr;
-    }
-
     public String readStrem(InputStream inputStream)
     {
         StringBuilder sb= new StringBuilder();
@@ -296,7 +278,6 @@ public class ConnDB
         }
         return sb.toString();
     }
-
 
     public String getEncodedData(Map<String,String> data)
     {
@@ -391,8 +372,6 @@ public class ConnDB
                     writer.flush();
                     writer.close();
 
-                    String inputStr ="";
-                    String jsonStr = "";
                     Message msg = Message.obtain();
                     InputStream inputStream = connection.getInputStream();
                     String readStream = readStrem(inputStream);
@@ -442,36 +421,11 @@ public class ConnDB
                     dataToSend.put("contect", str);
                     String encodedStr = getEncodedData(dataToSend);
 
-//                    JSONArray array = new JSONArray();
-//                    JSONObject obj = new JSONObject();
-//
-//                    obj.put("acc", acc);
-//                    obj.put("shop_id", shopID);
-//                    obj.put("total_price", tPrice);
-//
-//                    ArrayList<JSONObject> foodArray = new ArrayList<>();
-//                    for(int i = 0; i < foodList.size(); i++){
-//                        FoodObj foodObj = foodList.get(i);
-//                        JSONObject fObj = new JSONObject();
-//                        fObj.put("prod_id", foodObj.getProdID());
-//                        fObj.put("prod_name", foodObj.getName());
-//                        fObj.put("sale_qty", foodObj.getAmount());
-//                        fObj.put("sale_price", foodObj.getPrice());
-//                        fObj.put("total_price", foodObj.getTotalPrice());
-//                        foodArray.add(fObj);
-//                    }
-
-//                    obj.put("food_arr", foodArray);
-//                    array.put(obj);
-//                    dataToSend.put("json", array.toString());
-//                    String encodedStr = getEncodedData(dataToSend);
-
                     String urlString = "https://nacl.000webhostapp.com/sendOrder2.php";
                     URL url = new URL(urlString);
                     HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
                     //Writing dataToSend to outputstreamwriter
-//                    connection.setRequestMethod("POST");
                     connection.setDoOutput(true);
                     OutputStreamWriter writer = new OutputStreamWriter(connection.getOutputStream());
                     writer.write(encodedStr);

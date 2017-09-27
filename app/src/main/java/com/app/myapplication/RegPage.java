@@ -1,11 +1,12 @@
 package com.app.myapplication;
 
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -17,6 +18,7 @@ import java.util.regex.Pattern;
 public class RegPage extends AppCompatActivity {
 
     ConnDB mConnDB = ConnDB.getInstance();
+    Context mMyContext;
     EditText mAccEdit;
     EditText mPwdEdit;
     EditText mNameEdit;
@@ -38,6 +40,8 @@ public class RegPage extends AppCompatActivity {
         setContentView(R.layout.activity_reg_page);
 
         //====================================================================================
+
+        mMyContext = RegPage.this;
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("會員注冊");
@@ -202,7 +206,6 @@ public class RegPage extends AppCompatActivity {
                 mIsCheckAcc = false;
                 mIsCheckPhone = false;
                 mConnDB.checkSQLHaveData(RegPage.this, Values.Web.REG_CHECK_ACC, "acc", mAcc);
-//                mConnDB.checkSQLHaveData(RegPage.this, Values.Web.REG_CHECK_PHONE, "phone", mPhone);
             }
         });
     }
@@ -217,18 +220,18 @@ public class RegPage extends AppCompatActivity {
     {
         mProgress.dismiss();
         Toast.makeText(RegPage.this, "注冊成功", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(mMyContext, IndexActivity.class);
+        startActivity(intent);
     }
 
     public void onCheckAccSucc()
     {
-        Log.e("REG", "AccSucc");
         mIsCheckAcc = true;
         checkIsCanReg();
     }
 
     public void onCheckPhoneSucc()
     {
-        Log.e("REG", "PhoneSucc");
         mIsCheckPhone = true;
         checkIsCanReg();
     }

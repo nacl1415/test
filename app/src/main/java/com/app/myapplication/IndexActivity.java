@@ -17,27 +17,13 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 public class IndexActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener
 {
-//	TextView mTextView;
-
-	final int IMAGE_HEIGHT = 180;
-
-	MemberMgr mMemberMgr = MemberMgr.getInstance();
 	Context mMyContext = IndexActivity.this;
-	JSONArray mJsonArray = null;
-	String TAG_RESULT ="result";
-	String TAG_ID = "id";
-	String TAG_NAME = "Name";
+	MemberMgr mMemberMgr = MemberMgr.getInstance();
+	ImgCreater mImgCreater = ImgCreater.getInstance();
 
 	LinearLayout mMainLayout;
-//	LinearLayout mLinearLayout;
-
-	ImgCreater mImgCreater = ImgCreater.getInstance();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -53,9 +39,6 @@ public class IndexActivity extends AppCompatActivity implements NavigationView.O
 			@Override
 			public void onClick(View view)
 			{
-//				mTextView.setText("");
-//				GetData();
-//				Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show();
 			}
 		});
 
@@ -105,54 +88,7 @@ public class IndexActivity extends AppCompatActivity implements NavigationView.O
             }
         });
 		layout.addView(img);
-
-//		FrameLayout layoutBg = new FrameLayout(this);
-//		params = new FrameLayout.LayoutParams(
-//				FrameLayout.LayoutParams.MATCH_PARENT, 80);
-//		params.gravity = Gravity.BOTTOM;
-//		layoutBg.setLayoutParams(params);
-//		layoutBg.setBackgroundColor(Color.BLACK);
-//		layoutBg.setAlpha(0.7f);
-//		layout.addView(layoutBg);
-//
-//		TextView textView = new TextView(this);
-//		params = new FrameLayout.LayoutParams(
-//				FrameLayout.LayoutParams.WRAP_CONTENT,
-//				FrameLayout.LayoutParams.WRAP_CONTENT);
-//		params.gravity = Gravity.BOTTOM|Gravity.CENTER;
-//		textView.setLayoutParams(params);
-//		layout.addView(textView);
-//		textView.setTextSize(20);
-//		textView.setTextColor(Color.WHITE);
-//		textView.setText("MianDangLou");
     }
-
-	protected void ShowNameList(String json)
-	{
-		try
-		{
-			JSONObject jsonObj = new JSONObject(json);
-			mJsonArray = jsonObj.getJSONArray("result");
-
-			for(int i = 0; i < mJsonArray.length(); i++)
-			{
-				JSONObject c = mJsonArray.getJSONObject(i);
-				String acc = c.getString("acc");
-				String pwd = c.getString("pwd");
-				String name = c.getString("name");
-				String phone = c.getString("phone");
-				String addr = c.getString("addr");
-
-//				mTextView.setText(
-//					mTextView.getText().toString() + "acc:" + acc + ", pwd:" +
-//					pwd +", Name:" + name + "\n");
-			}
-		}
-		catch (JSONException e)
-		{
-			e.printStackTrace();
-		}
-	}
 
 	@Override
 	public void onBackPressed()
@@ -220,6 +156,7 @@ public class IndexActivity extends AppCompatActivity implements NavigationView.O
 		}
 		else if(id == R.id.nav_send)
 		{
+			mMemberMgr.exitApp(mMyContext);
 		}
 
 		DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

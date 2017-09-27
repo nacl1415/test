@@ -17,6 +17,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 public class MemberPage extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -54,15 +55,7 @@ public class MemberPage extends AppCompatActivity
 
         getSupportActionBar().setTitle("會員");
 
-        Button btn = (Button)findViewById(R.id.editDataBtn);
-        btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(mMyContext, MemberEditPage.class));
-            }
-        });
-
-        btn = (Button)findViewById(R.id.logoutBtn);
+        Button btn = (Button)findViewById(R.id.logoutBtn);
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -73,6 +66,9 @@ public class MemberPage extends AppCompatActivity
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         mMemberMgr.logout();
+                        Intent intent = new Intent(mMyContext, LoginPage.class);
+                        startActivity(intent);
+                        Toast.makeText(mMyContext, "已登出", Toast.LENGTH_SHORT).show();
                     }
                 });
                 mDialog.setNegativeButton("NO", new DialogInterface.OnClickListener() {
@@ -144,6 +140,7 @@ public class MemberPage extends AppCompatActivity
         }
         else if(id == R.id.nav_send)
         {
+            mMemberMgr.exitApp(mMyContext);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

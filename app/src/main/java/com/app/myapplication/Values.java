@@ -5,22 +5,6 @@ package com.app.myapplication;
  */
 
 public class Values {
-    public static final int INDEX_PAGE = 0;
-    public static final int FOOD_PAGE = 1;
-    public static final int CART_PAGE = 2;
-    public static final int MYSHOP_PAGE = 3;
-    public static final int LOGIN_PAGE = 4;
-    public static final int REGISTER_PAGE = 5;
-
-    public class Shop {
-        public static final int MCDONALD = 0;
-        public static final int BBQ = 1;
-        public static final int PIZZA = 2;
-        public static final int ICECREAM = 3;
-        public static final int TEA = 4;
-        public static final int WATER = 5;
-        public static final int CAKE = 6;
-    }
 
     public class Web {
         public static final int LOGIN_SUCC = 0;
@@ -41,6 +25,8 @@ public class Values {
         public static final int SEND_ORDER_FAIL = 15;
         public static final int GET_ORDER_SUCC = 16;
         public static final int GET_ORDER_FAIL = 17;
+        public static final int LOGIN_TEMP_SUCC = 18;
+        public static final int LOGIN_TEMP_FAIL = 19;
     }
 
     public class who {

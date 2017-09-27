@@ -1,7 +1,9 @@
 package com.app.myapplication;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.v7.app.AlertDialog;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -48,11 +50,6 @@ public class MemberMgr {
         mPhone = phone;
         mAddr = addr;
         mShopID = shopID;
-        mIsLogin = true;
-    }
-
-    public void setisLogin()
-    {
         mIsLogin = true;
     }
 
@@ -116,14 +113,6 @@ public class MemberMgr {
         {
             mBuyFoodList.put(prodID, foodObj);
         }
-    }
-
-    public void removeFoodObj(String prodID)
-    {
-        if(mBuyFoodList.get(prodID) == null)
-            return;
-
-        mBuyFoodList.remove(prodID);
     }
 
     public void clearFoodObj()
@@ -233,5 +222,27 @@ public class MemberMgr {
                 }
                 break;
         }
+    }
+
+    public void exitApp(final Context context)
+    {
+        AlertDialog.Builder mDialog = new AlertDialog.Builder(context);
+        mDialog.setTitle("離開程式");
+        mDialog.setMessage("是否離開?");
+        mDialog.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Intent homeIntent = new Intent(Intent.ACTION_MAIN);
+                homeIntent.addCategory( Intent.CATEGORY_HOME );
+                homeIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                context.startActivity(homeIntent);
+            }
+        });
+        mDialog.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+            }
+        });
+        mDialog.show();
     }
 }

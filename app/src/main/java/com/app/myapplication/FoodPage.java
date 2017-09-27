@@ -2,6 +2,7 @@ package com.app.myapplication;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -12,6 +13,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
@@ -28,6 +30,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -37,7 +40,6 @@ import java.util.HashMap;
 
 public class FoodPage extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener
 {
-
 	ImgCreater mImgCreater = ImgCreater.getInstance();
 	MemberMgr mMemberMgr = MemberMgr.getInstance();
 	HashMap<String, FoodObj> mFoodList = new HashMap<>();
@@ -46,6 +48,7 @@ public class FoodPage extends AppCompatActivity implements NavigationView.OnNavi
 	LinearLayout mMainLayout;
 	TextView mTotalPriceView;
 
+	AlertDialog.Builder mDialog;
 	Context mMyContext = FoodPage.this;
 
 	@Override
@@ -84,23 +87,55 @@ public class FoodPage extends AppCompatActivity implements NavigationView.OnNavi
 		payBtn.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				for (Object key : mFoodList.keySet()) {
-					FoodObj obj = mFoodList.get(key);
-					if(obj.getAmount() > 0)
-						mMemberMgr.addFoodObj(obj);
-				}
+				if(mMemberMgr.isLogin()) {
+					if(mTotalPriceView.getText().toString().equals("0"))
+					{
+						Toast.makeText(mMyContext, "請選擇商品", Toast.LENGTH_SHORT).show();
+						return;
+					}
+					int totalAmount = 0;
+					for (Object key : mFoodList.keySet()) {
+						FoodObj obj = mFoodList.get(key);
+						int amount = obj.getAmount();
+						if (amount > 0)
+						{
+							totalAmount = totalAmount + amount;
+							mMemberMgr.addFoodObj(obj);
+						}
+					}
 
-				Intent intent = new Intent(mMyContext, PayPage.class);
-				startActivity(intent);
+					if(totalAmount >= 10)
+					{
+						mDialog = new AlertDialog.Builder(mMyContext);
+						mDialog.setTitle("大量購買商品");
+						mDialog.setMessage("偵測到大量購買商品\n是否繼續購買商品?");
+						mDialog.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+								Intent intent = new Intent(mMyContext, PayPage.class);
+								startActivity(intent);
+							}
+						});
+						mDialog.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+							}
+						});
+						mDialog.show();
+					}
+					else
+					{
+						Intent intent = new Intent(mMyContext, PayPage.class);
+						startActivity(intent);
+					}
+				}
+				else
+				{
+					Intent intent = new Intent(mMyContext, LoginTempPage.class);
+					startActivity(intent);
+				}
 			}
 		});
-//		createFood(R.drawable.a00);
-//		createFood(R.drawable.a01);
-//		createFood(R.drawable.a02);
-//		createFood(R.drawable.a03);
-//		createFood(R.drawable.a04);
-//		createFood(R.drawable.a05);
-//		createFood(R.drawable.a06);
 	}
 
 	@Override
@@ -291,9 +326,6 @@ public class FoodPage extends AppCompatActivity implements NavigationView.OnNavi
 				String shopID = c.getString("shop_id");
 
 				createFood(id, name, price, img, shopID);
-//				mTextView.setText(
-//					mTextView.getText().toString() + "N:" + name + ", P:" +
-//							price +", I:" + img + "\n");
 			}
 		}
 		catch (JSONException e)
@@ -369,6 +401,7 @@ public class FoodPage extends AppCompatActivity implements NavigationView.OnNavi
 		}
 		else if(id == R.id.nav_send)
 		{
+			mMemberMgr.exitApp(mMyContext);
 		}
 
 		DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

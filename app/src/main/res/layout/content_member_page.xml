@@ -29,12 +29,6 @@
         tools:layout_constraintTop_creator="1">
 
         <Button
-            android:id="@+id/editDataBtn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="修改會員資料" />
-
-        <Button
             android:id="@+id/logoutBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

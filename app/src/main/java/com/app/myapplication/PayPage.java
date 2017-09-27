@@ -103,7 +103,7 @@ public class PayPage extends AppCompatActivity {
     {
         mProgress.dismiss();
         mMemberMgr.setIsNeedLoadBuyerOrder(true);
-        Toast.makeText(this, "SUCC", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "訂單已送出", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(PayPage.this, CartPage.class);
         startActivity(intent);
     }

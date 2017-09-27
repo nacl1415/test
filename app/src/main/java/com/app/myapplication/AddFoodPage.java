@@ -31,10 +31,7 @@ public class AddFoodPage extends AppCompatActivity {
     TextView mInfoText;
     String mImgName = "";
 
-    private int serverResponseCode = 0;
-    private String upLoadServerUri = null;
     private static final String IMAGE_FILE_LOCATION = "file:///sdcard/temp.jpg";
-    Uri imageUri = Uri.parse(IMAGE_FILE_LOCATION);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,7 +103,7 @@ public class AddFoodPage extends AppCompatActivity {
     public void onAddFoodSucc()
     {
         mProgress.dismiss();
-        Toast.makeText(this, "Succ", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "上傳成功", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(AddFoodPage.this, UploadPage.class);
         startActivity(intent);
     }

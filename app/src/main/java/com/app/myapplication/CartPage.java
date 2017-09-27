@@ -75,12 +75,10 @@ public class CartPage extends AppCompatActivity implements NavigationView.OnNavi
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				Intent intent = new Intent(CartPage.this, DetailPage.class);
 
-				//new一個Bundle物件，並將要傳遞的資料傳入
 				Bundle bundle = new Bundle();
 				bundle.putString("contect", mContectList.get(position));
 				intent.putExtras(bundle);
 
-				//切換Activity
 				startActivity(intent);
 			}
 		});
@@ -124,32 +122,28 @@ public class CartPage extends AppCompatActivity implements NavigationView.OnNavi
 				break;
 		}
 
-		String listStr = "\n" + "訂單號碼: " + saleID + "\n" +
-				"訂單日期: " + date + "\n" +
-				"商家: " + shopName + "\n" +
-				"總金額: " + tPrice + "\n" +
-				"收件人: " + name + "\n" +
-				"手機: " + phone + "\n" +
-				"地址: " + addr + "\n";
+		String listStr = "";
+		if(mMemberMgr.getWho() == Values.who.BUYER) {
+			listStr = "\n" + "訂單號碼: " + saleID + "\n" +
+					"訂單日期: " + date + "\n" +
+					"商家: " + shopName + "\n" +
+					"總金額: " + tPrice + "\n" +
+					"收件人: " + name + "\n" +
+					"手機: " + phone + "\n" +
+					"地址: " + addr + "\n";
+		}
+		else
+		{
+			listStr = "\n" + "訂單號碼: " + saleID + "\n" +
+					"訂單日期: " + date + "\n" +
+					"買家: " + name + "\n" +
+					"手機: " + phone + "\n" +
+					"地址: " + addr + "\n" +
+					"總金額: " + tPrice + "\n";
+		}
 
 		mItemList.add(listStr);
 		mContectList.add(contect);
-
-//		String[] mainArr = contect.split("&");
-//		String[] item = new String[10];
-//		String[] item = new String[mainArr.length];
-//		for(int i = 0; i < mainArr.length; i++)
-//		{
-//			String obj = mainArr[i];
-//			String[] objArr = obj.split("!");
-//			String objName = objArr[0];
-//			String objAmount = objArr[1];
-//			item[i] = objName + " x" + objAmount;
-//		}
-//		for(int i = 0; i < 10; i++)
-//		{
-//			item[i] = "超級達無敵大漢堡" + " x" + i + "\n" + "DUDUDDUDU";
-//		}
 	}
 
 	public void createOrder2(String saleID, String date, String name, String phone, String addr,
@@ -397,6 +391,7 @@ public class CartPage extends AppCompatActivity implements NavigationView.OnNavi
 		}
 		else if(id == R.id.nav_send)
 		{
+			mMemberMgr.exitApp(mMyContext);
 		}
 
 		DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

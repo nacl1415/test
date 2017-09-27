@@ -97,7 +97,7 @@ public class LoginPage extends AppCompatActivity
                 mProgress.show();
 
                 ConnDB conn = ConnDB.getInstance();
-                conn.login(LoginPage.this, acc, pwd);
+                conn.login(LoginPage.this, acc, pwd, false);
             }
         });
 
@@ -131,11 +131,7 @@ public class LoginPage extends AppCompatActivity
                 String addr = c.getString("addr");
                 String shopID = "1";
 
-
                 mMemberMgr.login(acc, pwd, name, phone, addr, shopID);
-//				mTextView.setText(
-//					mTextView.getText().toString() + "N:" + name + ", P:" +
-//							price +", I:" + img + "\n");
             }
         }
         catch (JSONException e)
@@ -143,7 +139,6 @@ public class LoginPage extends AppCompatActivity
             e.printStackTrace();
         }
 
-//        mMemberMgr.setisLogin();
         mMemberMgr.gotoPage(mMyContext, Values.PageIndex.Index);
     }
 
@@ -222,6 +217,7 @@ public class LoginPage extends AppCompatActivity
         }
         else if(id == R.id.nav_send)
         {
+            mMemberMgr.exitApp(mMyContext);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
